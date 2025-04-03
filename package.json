@@ -10,7 +10,7 @@
     "test": "jest",
     "test:watch": "jest --watchAll"
   },
-  "author": "",
+  "author": "Lucca Kazlauskas Zaccaria",
   "license": "MIT",
   "dependencies": {
     "next": "^13.1.6",
