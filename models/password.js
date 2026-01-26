@@ -1,8 +1,22 @@
 import bcryptjs from "bcryptjs";
 import crypto from "crypto";
+import { InternalServerError } from "infra/errors.js";
+
+function getPepper() {
+  const pepper = process.env.PEPPER_SECRET;
+
+  if (!pepper) {
+    const publicErrorObject = new InternalServerError({
+      cause: "PEPPER_SECRET environment variable is not defined",
+    });
+    throw publicErrorObject;
+  }
+
+  return pepper;
+}
 
 async function hash(password) {
-  const pepper = process.env.PEPPER_SECRET;
+  const pepper = getPepper();
   const hmac = crypto
     .createHmac("sha256", pepper)
     .update(password)
