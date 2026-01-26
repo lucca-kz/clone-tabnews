@@ -1,12 +1,14 @@
 import bcryptjs from "bcryptjs";
-
-/*
- * desafio, criar um pepper por contra própria para a senha do usuário
- */
+import crypto from "crypto";
 
 async function hash(password) {
+  const pepper = process.env.PEPPER_SECRET;
+  const hmac = crypto
+    .createHmac("sha256", pepper)
+    .update(password)
+    .digest("hex");
   const rounds = getNumberOfRounds();
-  return await bcryptjs.hash(password, rounds);
+  return await bcryptjs.hash(hmac, rounds);
 }
 
 function getNumberOfRounds() {
@@ -14,7 +16,12 @@ function getNumberOfRounds() {
 }
 
 async function compare(providedPassword, storedPassword) {
-  return await bcryptjs.compare(providedPassword, storedPassword);
+  const pepper = process.env.PEPPER_SECRET;
+  const hmac = crypto
+    .createHmac("sha256", pepper)
+    .update(providedPassword)
+    .digest("hex");
+  return await bcryptjs.compare(hmac, storedPassword);
 }
 
 const password = {

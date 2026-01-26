@@ -40,14 +40,15 @@ describe("POST /api/v1/users", () => {
       expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
 
       const userInDatabase = await user.findOneByUsername("luccakaz");
+      console.log("user no banco de dados: ", userInDatabase);
       const correctPasswordMatch = await password.compare(
         "1234",
-        responseBody.password,
+        userInDatabase.password,
       );
 
       const incorrectPasswordMatch = await password.compare(
         "SenhaErrada",
-        responseBody.password,
+        userInDatabase.password,
       );
 
       expect(correctPasswordMatch).toBe(true);
@@ -83,7 +84,7 @@ describe("POST /api/v1/users", () => {
       expect(response2Body).toEqual({
         name: "ValidationError",
         message: "O email informado já está em uso.",
-        action: "Utilize outro email para realizar o cadastro.",
+        action: "Utilize outro email para realizar essa operação.",
         status_code: 400,
       });
     });
