@@ -32,29 +32,13 @@ describe("PATCH /api/v1/users/[username]", () => {
     });
 
     test("With duplicated username", async () => {
-      const user1response = await fetch("http://localhost:3000/api/v1/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: "user1",
-          email: "user1@gmail.com",
-          password: "1234",
-        }),
+      await orchestrator.createUser({
+        username: "user1",
       });
 
-      expect(user1response.status).toBe(201);
-
-      const user2response = await fetch("http://localhost:3000/api/v1/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: "user2",
-          email: "user2@gmail.com",
-          password: "1234",
-        }),
+      await orchestrator.createUser({
+        username: "user2",
       });
-
-      expect(user2response.status).toBe(201);
 
       const response = await fetch("http://localhost:3000/api/v1/users/user2", {
         method: "PATCH",
@@ -76,37 +60,24 @@ describe("PATCH /api/v1/users/[username]", () => {
     });
 
     test("With duplicated 'email'", async () => {
-      const user3response = await fetch("http://localhost:3000/api/v1/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: "user3",
-          email: "user3@gmail.com",
-          password: "1234",
-        }),
+      await orchestrator.createUser({
+        email: "user3@gmail.com",
       });
 
-      expect(user3response.status).toBe(201);
-
-      const user4response = await fetch("http://localhost:3000/api/v1/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: "user4",
-          email: "user4@gmail.com",
-          password: "1234",
-        }),
+      const createdUser2 = await orchestrator.createUser({
+        email: "user4@gmail.com",
       });
 
-      expect(user4response.status).toBe(201);
-
-      const response = await fetch("http://localhost:3000/api/v1/users/user4", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: "user3@gmail.com",
-        }),
-      });
+      const response = await fetch(
+        `http://localhost:3000/api/v1/users/${createdUser2.username}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: "user3@gmail.com",
+          }),
+        },
+      );
 
       expect(response.status).toBe(400);
 
@@ -120,20 +91,9 @@ describe("PATCH /api/v1/users/[username]", () => {
     });
 
     test("With diferent case but same 'username'", async () => {
-      const userCaseResponse1 = await fetch(
-        "http://localhost:3000/api/v1/users",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            username: "userCase",
-            email: "user_case@gmail.com",
-            password: "1234",
-          }),
-        },
-      );
-
-      expect(userCaseResponse1.status).toBe(201);
+      await orchestrator.createUser({
+        username: "userCase",
+      });
 
       const response = await fetch(
         "http://localhost:3000/api/v1/users/userCase",
