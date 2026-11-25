@@ -13,7 +13,6 @@ describe("POST /api/v1/status", () => {
       expect(response.status).toBe(405);
 
       const responseBody = await response.json();
-      console.log(responseBody);
       expect(responseBody).toEqual({
         name: "MethodNotAllowedError",
         message: "Método não permitido para este endpoint.",

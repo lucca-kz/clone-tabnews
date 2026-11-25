@@ -40,7 +40,6 @@ describe("POST /api/v1/users", () => {
       expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
 
       const userInDatabase = await user.findOneByUsername("luccakaz");
-      console.log("user no banco de dados: ", userInDatabase);
       const correctPasswordMatch = await password.compare(
         "1234",
         userInDatabase.password,
