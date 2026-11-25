@@ -139,9 +139,7 @@ describe("GET /api/v1/user", () => {
         now: new Date(Date.now() - HALF_OF_LIFE),
       });
 
-      const createdUser = await orchestrator.createUser({
-        username: "userWithValidSessionHalfOfLife",
-      });
+      const createdUser = await orchestrator.createUser();
 
       const sessionObject = await orchestrator.createSession(createdUser.id);
 
@@ -160,7 +158,7 @@ describe("GET /api/v1/user", () => {
 
       expect(responseBody).toEqual({
         id: createdUser.id,
-        username: "userWithValidSessionHalfOfLife",
+        username: createdUser.username,
         email: createdUser.email,
         password: createdUser.password,
         created_at: createdUser.created_at.toISOString(),
@@ -199,16 +197,18 @@ describe("GET /api/v1/user", () => {
 
     test("with valid session about 15 minutes to be expired", async () => {
       //15 minutes in miliseconds
-      const FIFTEEN_MINUTES = 60 * 15 * 1000;
+      const FIFTEEN_MINUTES_EXTRA = 60 * 15 * 1000;
 
       //setting the date for 15 minutes ago
       jest.useFakeTimers({
-        now: new Date(Date.now() - FIFTEEN_MINUTES),
+        now: new Date(
+          Date.now() -
+            session.EXPIRATION_IN_MILLISECONDS +
+            FIFTEEN_MINUTES_EXTRA,
+        ),
       });
 
-      const createdUser = await orchestrator.createUser({
-        username: "userWithValidSessionFifteenMin",
-      });
+      const createdUser = await orchestrator.createUser();
 
       const sessionObject = await orchestrator.createSession(createdUser.id);
 
@@ -227,7 +227,7 @@ describe("GET /api/v1/user", () => {
 
       expect(responseBody).toEqual({
         id: createdUser.id,
-        username: "userWithValidSessionFifteenMin",
+        username: createdUser.username,
         email: createdUser.email,
         password: createdUser.password,
         created_at: createdUser.created_at.toISOString(),
@@ -266,16 +266,16 @@ describe("GET /api/v1/user", () => {
 
     test("with valid session about 1 minute to be expired", async () => {
       //1 minute in miliseconds
-      const ONE_MINUTE = 60 * 1000;
+      const ONE_MINUTE_EXTRA = 60 * 1000;
 
       //setting the date for 1 minute ago
       jest.useFakeTimers({
-        now: new Date(Date.now() - ONE_MINUTE),
+        now: new Date(
+          Date.now() - session.EXPIRATION_IN_MILLISECONDS + ONE_MINUTE_EXTRA,
+        ),
       });
 
-      const createdUser = await orchestrator.createUser({
-        username: "userWithValidSessionOneMin",
-      });
+      const createdUser = await orchestrator.createUser();
 
       const sessionObject = await orchestrator.createSession(createdUser.id);
 
@@ -294,7 +294,7 @@ describe("GET /api/v1/user", () => {
 
       expect(responseBody).toEqual({
         id: createdUser.id,
-        username: "userWithValidSessionOneMin",
+        username: createdUser.username,
         email: createdUser.email,
         password: createdUser.password,
         created_at: createdUser.created_at.toISOString(),
@@ -333,16 +333,16 @@ describe("GET /api/v1/user", () => {
 
     test("with valid session about 1 second to be expired", async () => {
       //1 second in miliseconds
-      const ONE_SECOND = 1000;
+      const ONE_SECOND_EXTRA = 1000;
 
       //setting the date for 1 second ago
       jest.useFakeTimers({
-        now: new Date(Date.now() - ONE_SECOND),
+        now: new Date(
+          Date.now() - session.EXPIRATION_IN_MILLISECONDS + ONE_SECOND_EXTRA,
+        ),
       });
 
-      const createdUser = await orchestrator.createUser({
-        username: "userWithValidSessionOneSec",
-      });
+      const createdUser = await orchestrator.createUser();
 
       const sessionObject = await orchestrator.createSession(createdUser.id);
 
@@ -361,7 +361,7 @@ describe("GET /api/v1/user", () => {
 
       expect(responseBody).toEqual({
         id: createdUser.id,
-        username: "userWithValidSessionOneSec",
+        username: createdUser.username,
         email: createdUser.email,
         password: createdUser.password,
         created_at: createdUser.created_at.toISOString(),
