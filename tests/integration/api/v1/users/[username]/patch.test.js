@@ -238,7 +238,6 @@ describe("PATCH /api/v1/users/[username]", () => {
       expect(responseBody.updated_at > responseBody.created_at).toBe(true);
 
       const userInDatabase = await user.findOneByUsername("newPassword1");
-      console.log("user no banco de dados: ", userInDatabase);
       const correctPasswordMatch = await password.compare(
         "newPassword2",
         userInDatabase.password,
